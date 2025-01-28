@@ -1,0 +1,8 @@
+name: BringBackBlocking
+version: '1.0'
+main: com.al3x.bringBackBlocking.BringBackBlocking
+api-version: '1.21'
+softdepend: [OldCombatMechanics]
+depend: [ProtocolLib, NBTAPI]
+commands:
+  giveblockablesword:
