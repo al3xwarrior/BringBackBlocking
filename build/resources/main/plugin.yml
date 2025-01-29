@@ -1,5 +1,5 @@
 name: BringBackBlocking
-version: '1.0'
+version: '1.0.1'
 main: com.al3x.bringBackBlocking.BringBackBlocking
 api-version: '1.21'
 softdepend: [OldCombatMechanics]

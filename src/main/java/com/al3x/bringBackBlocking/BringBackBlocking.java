@@ -9,6 +9,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import de.tr7zw.nbtapi.NBT;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,10 +25,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class BringBackBlocking extends JavaPlugin implements Listener {
 
+    FileConfiguration config = this.getConfig();
     List<Player> playersEating = new ArrayList<>();
 
     @Override
     public void onEnable() {
+
+        config.addDefault("reduce-percentage", 50);
+        config.addDefault("reduce-only-on-entity-damage", true);
+        config.options().copyDefaults(true);
+        saveConfig();
+
         Bukkit.getPluginManager().registerEvents(this, this);
         getCommand("giveblockablesword").setExecutor(new GiveBlockableSword());
 
@@ -55,6 +63,8 @@ public final class BringBackBlocking extends JavaPlugin implements Listener {
     // if so reduce the damage
     @EventHandler
     public void onHit(EntityDamageEvent e) {
+        if (config.getBoolean("reduce-only-on-entity-damage") && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) return;
+
         // Victim is a player
         if (!(e.getEntity() instanceof Player)) return;
         Player player = (Player) e.getEntity();
@@ -68,7 +78,7 @@ public final class BringBackBlocking extends JavaPlugin implements Listener {
 
         // Item is being "consumed"
         if (playersEating.contains(player)) {
-            e.setDamage(e.getDamage() / 2);
+            e.setDamage(config.getInt("reduce-percentage") * e.getDamage() / 100);
         }
     }
 
